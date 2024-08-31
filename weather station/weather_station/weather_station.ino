@@ -3,10 +3,9 @@
 #include <dht11.h>
 #define DHT11PIN 4
 
-const char* ssid = "Your_SSID";
-const char* password = "Your_PASSWORD";
+const char* ssid = "";
+const char* password = "";
 dht11 DHT11;
-var char* url = "";
 
 void setup() {
   Serial.begin(115200);
@@ -27,21 +26,25 @@ void loop() {
 
     Serial.print("Humidity (%): ");
     Serial.println((float)DHT11.humidity, 2);
-    float hum = (float)DHT11.humidity, 2
+    int hum = DHT11.humidity;
 
     Serial.print("Temperature  (C): ");
     Serial.println((float)DHT11.temperature, 2);
-    float temp = (float)DHT11.temperature, 2
+    int temp = DHT11.temperature;
 
-    if (client.connect("worldtimeapi.org", 80)) {
-      
-      client.print(String("GET ") + time_api_url + " HTTP/1.1\r\n" +
-                   "Host: worldtimeapi.org\r\n" +
+    // Connect to Flask server
+    if (client.connect("192.168.0.108", 80)) {
+      String url = "/post/" + String(temp) + "/" + String(hum);
+      client.print(String("GET ") + url + " HTTP/1.1\r\n" +
+                   "Host: 192.168.0.108\r\n" +
                    "Connection: close\r\n\r\n");
 
-      delay(2000);
+      delay(500);
     }
   } else {
     Serial.println("WiFi not connected");
   }
+
+  delay(2000);
 }
+
